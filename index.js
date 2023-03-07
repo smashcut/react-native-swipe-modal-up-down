@@ -29,7 +29,7 @@ const SwipeUpDownModal = (props) => {
 
   let animatedValueX = 0;
 
-  let animatedValueY = props.offsetFromMaxHeight || 0;
+  let animatedValueY = props.offsetFromTopScreen || 0;
 
   const panResponder = useRef(
     PanResponder.create({
@@ -192,7 +192,7 @@ const SwipeUpDownModal = (props) => {
         setIsAnimating(true);
         Animated.timing(pan, {
           ...TIMING_CONFIG,
-          toValue: { x: 0, y: props.offsetFromMaxHeight || 0 },
+          toValue: { x: 0, y: props.offsetFromTopScreen || 0 },
           useNativeDriver: false,
         }).start(() => {
           setIsAnimating(false);
