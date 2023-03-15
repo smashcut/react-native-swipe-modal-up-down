@@ -23,9 +23,30 @@ const SwipeUpDownModal = (props) => {
 
   const pan = useRef(new Animated.ValueXY()).current;
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   let [isAnimating, setIsAnimating] = useState(
     props.DisableHandAnimation ? true : false
   );
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   let animatedValueX = 0;
 
@@ -186,7 +207,7 @@ const SwipeUpDownModal = (props) => {
     <Modal
       animationType="none"
       transparent={true}
-      supportedOrientations={['portrait', 'landscape']}
+      supportedOrientations={["portrait", "landscape"]}
       visible={props.modalVisible}
       onShow={() => {
         setIsAnimating(true);
@@ -200,7 +221,12 @@ const SwipeUpDownModal = (props) => {
       }}
       onRequestClose={props.onRequestClose}
     >
-      <Animated.View style={handleMainBodyStyle(interpolateBackgroundOpacity)}>
+      <Animated.View
+        style={[
+          handleMainBodyStyle(interpolateBackgroundOpacity),
+          isKeyboardVisible ? { marginTop: props.keyboardVerticalOffset || 0 } : {},
+        ]}
+      >
         <Animated.View
           style={handleGetStyleBody(interpolateBackgroundOpacity)}
           {...panResponder.panHandlers}
